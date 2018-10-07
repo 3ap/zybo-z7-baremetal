@@ -1,0 +1,4 @@
+*.o
+tags
+*.elf
+*.log
