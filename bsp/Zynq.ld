@@ -12,7 +12,7 @@ ASSERT(__stack_size, "Must provide a non-zero stack size");
 /* TODO: Also make sure stack size is 32-bit aligned */
 
 __heap_end = __stext + LENGTH(SRAM_0);
-__heap_start = __end;
+__heap_start = end;
 
 SECTIONS
 {
@@ -39,13 +39,13 @@ SECTIONS
   .bss (NOLOAD) :
   {
     . = ALIGN(4);
-    __sbss = .;              /* Used for zeroing bss on startup */
+    __bss_start__ = .;              /* Used for zeroing bss on startup */
     *(.bss .bss.*)
-    __ebss = .;
+    __bss_end__ = .;
   } >SRAM_0
 
   . = ALIGN(4);
-  __end = .;
+  end = .;
 
   /* Place all stacks in SRAM_1 - need to avoid filling addresses */
   /* 0xfffffe00 to 0xfffffff0 - proc1 is halted running code in this range */

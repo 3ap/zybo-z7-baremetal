@@ -8,7 +8,7 @@ GDB     = $(CROSS_COMPILE)gdb
 OOCD    = openocd
 
 CFLAGS  = -I$(BSPDIR) -mcpu=cortex-a9 -O0 -g3 -Wall -Werror -Wpedantic
-LDFLAGS = -nostdlib -T$(BSPDIR)/Zynq.ld
+LDFLAGS = -T$(BSPDIR)/Zynq.ld -lc -lnosys -lg -lm
 ASFLAGS = -g -mcpu=cortex-a9
 
 BSP     = $(BSPDIR)/boot.S \
@@ -20,7 +20,7 @@ OBJECTS = $(patsubst %.S,%.o,$(patsubst %.c,%.o,$(SOURCES) $(BSP)))
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	$(LD) $(LDFLAGS) -o $@ $^
+	$(CC) -o $@ $^ $(LDFLAGS)
 	@$(SZ) $(TARGET)
 
 %.o: %.S

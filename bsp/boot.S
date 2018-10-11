@@ -214,8 +214,8 @@ proc0_init:
 
 
     /* Clear the .bss section (zero inits) */
-    ldr r1, =__sbss // where in memory is start of bss (get from linker script)
-    ldr r2, =__ebss // where in memory is end of bss (get from linker script)
+    ldr r1, =__bss_start__ // where in memory is start of bss (get from linker script)
+    ldr r2, =__bss_end__ // where in memory is end of bss (get from linker script)
     mov r3, #0
 clearbss:
     cmp r1, r2
