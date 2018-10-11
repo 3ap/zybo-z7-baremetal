@@ -71,7 +71,7 @@ char uart_receive() {
 	return UART_FIFO;
 }
 
-void init(void) {
+int main(void) {
 	uint32_t r = 0; // Temporary value variable
 
 	r = UART_CTRL;

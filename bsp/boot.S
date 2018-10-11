@@ -192,8 +192,6 @@
 
 reset_handler:
 proc0_init:
-main:
-    /* For xilinx debugger - IDE debugger init searches for this function */
     /* Switch between the various modes and initialize stack pointers */
     /* When finished with this block, we'll be in the supervisor (privledged user) mode */
     /* set all the stack pointers */
@@ -226,7 +224,7 @@ clearbss:
 
     bl ps7_init
     /* Finally, transfer control to the user program */
-    b init
+    b main
 
 undef_handler:
     b undef_handler

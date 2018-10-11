@@ -13,7 +13,7 @@ void delay(uint32_t delay) {
   for(volatile uint32_t i = 0; i < delay; i++);
 }
 
-void init(void)
+int main(void)
 {
   MIO_PIN07_CTRL = MIO_PIN07_CTRL_GPIO0;
 
