@@ -33,7 +33,8 @@ SECTIONS
     __sdata = .;
     *(.data .data.*)
     __edata = .;
-
+    __data_size = __edata - __sdata;
+    __data_start = __sdata;
   } >SRAM_0
 
   .bss (NOLOAD) :
@@ -42,6 +43,8 @@ SECTIONS
     __bss_start__ = .;              /* Used for zeroing bss on startup */
     *(.bss .bss.*)
     __bss_end__ = .;
+    __bss_size = __bss_end__ - __bss_start__;
+    __bss_start = __bss_start__;
   } >SRAM_0
 
   . = ALIGN(4);
@@ -84,3 +87,8 @@ SECTIONS
     *(.data_in_ddr)
   } >DDR_PS
 }
+
+__stack = ORIGIN(SRAM_1) + LENGTH(SRAM_1);
+__data_source = LOADADDR(.data);
+__tls_base = 0;
+__arm32_tls_tcb_offset = 0;
