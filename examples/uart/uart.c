@@ -5,6 +5,7 @@
 #include <errno.h>
 #include <unistd.h>
 
+
 #define XUARTPS_CR_TXRST	0x00000002U  /**< TX logic reset */
 #define XUARTPS_CR_RXRST	0x00000001U  /**< RX logic reset */
 
@@ -15,6 +16,7 @@
 #define XUARTPS_FIFO_OFFSET     0x0030U  /**< FIFO [7:0] */
 #define XUARTPS_SR_OFFSET       0x002CU  /**< Channel Status [14:0] */
 #define XPS_UART1_BASEADDR      0xE0001000U
+#define XPS_UART0_BASEADDR      0xE0000000U
 
 #define XUARTPS_MR_CHMODE_NORM		0x00000000U /**< Normal mode */
 #define XUARTPS_MR_STOPMODE_1_BIT	0x00000000U /**< 1 stop bit */
@@ -144,7 +146,6 @@ static inline void back_up(void)
 void
 get_buffered_line(void) {
   char  c;
-
   if (start_ndx != end_ndx) {
     return;
   }
@@ -188,6 +189,34 @@ get_buffered_line(void) {
     }
   }
 }
+
+// picolib https://github.com/picolibc/picolibc/blob/main/doc/os.md
+#if defined(_PICOLIBC__) || defined(__PICOLIBC__)
+static int sample_putc(char c, FILE *file)
+{ (void) file;		/* Not used in this function */
+  uart_send(c);		/* Defined by underlying system */
+  return c;
+}
+
+static int sample_getc(FILE *file)
+{ unsigned char c;
+ (void) file;		/* Not used in this function */
+ c = uart_recv_blocking();	/* Defined by underlying system */
+ return c;
+}
+
+static int sample_flush(FILE *file)
+{ /* This function doesn't need to do anything */
+ (void) file;		/* Not used in this function */
+ return 0;
+}
+
+static FILE __stdio = FDEV_SETUP_STREAM(sample_putc, sample_getc, sample_flush, _FDEV_SETUP_RW);
+FILE *const stdin = &__stdio;
+__strong_reference(stdin, stdout);
+__strong_reference(stdin, stderr);
+#endif
+// end of picolib std* implementation
 
 /*
  * Called by libc stdio fwrite functions
@@ -242,11 +271,11 @@ _read(int fd, char *ptr, int len)
 }
 
 int get_delay() {
-  char local_buf[32];
-  printf("Enter the delay constant for blink: ");
+  int local_buf;
+  printf("Enter the delay constant for blink (1000000): ");
   fflush(stdout);
-  fgets(local_buf, sizeof(local_buf), stdin);
-  return atoi(local_buf);
+  fscanf(stdin, "%d", &local_buf);
+  return (local_buf);
 }
 
 static inline void led_blink(int delay) {
