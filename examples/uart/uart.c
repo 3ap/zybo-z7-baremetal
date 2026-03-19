@@ -191,6 +191,7 @@ get_buffered_line(void) {
 }
 
 // picolib https://github.com/picolibc/picolibc/blob/main/doc/os.md
+#if defined(_PICOLIBC__) || defined(__PICOLIBC__)
 static int sample_putc(char c, FILE *file)
 { (void) file;		/* Not used in this function */
   uart_send(c);		/* Defined by underlying system */
@@ -214,6 +215,7 @@ static FILE __stdio = FDEV_SETUP_STREAM(sample_putc, sample_getc, sample_flush, 
 FILE *const stdin = &__stdio;
 __strong_reference(stdin, stdout);
 __strong_reference(stdin, stderr);
+#endif
 // end of picolib std* implementation
 
 /*
